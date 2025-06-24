@@ -8,6 +8,10 @@ This is a lightweight Python application for scanning and logging QR codes from 
 
 Built as part of a portfolio project. Originally developed during the CS50 Introduction to Programming with Python course.
 
+## Video Presentation
+
+ - [Youtube](https://youtu.be/ZIZn9P7-zqw)
+
 ---
 
 ## Functionality

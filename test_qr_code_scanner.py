@@ -6,7 +6,6 @@ import os
 import pytest
 import qrcode
 import cv2
-import time
 import numpy as np
 from pathlib import Path
 import sys
@@ -16,10 +15,8 @@ import csv
 from qr_code_scanner import (
     get_camera_image,
     parse_qr_code,
-    try_with_timeout,
     write_log_to_file,
     read_qr_code_from_camera,
-    handler,
 )
 
 
@@ -92,35 +89,6 @@ def test_parse_qr_code_no_code():
     assert (
         qr_data is None
     ), "parse_qr_code should return None when no QR code is detected."
-
-
-def test_try_with_timeout_success():
-    """Test if try_with_timeout executes the function within the timeout."""
-
-    def dummy_function():
-        return "Function executed"
-
-    result = try_with_timeout(dummy_function, 1)
-    assert (
-        result == "Function executed"
-    ), "try_with_timeout did not return expected result."
-
-
-def test_try_with_timeout_failure():
-    """Test if try_with_timeout raises TimeoutError for long-running function."""
-
-    def long_function():
-        time.sleep(2)
-
-    with pytest.raises(TimeoutError):
-        try_with_timeout(long_function, timeout=1, raise_exception=True)
-
-
-def test_handler_timeout():
-    """Test if handler raises TimeoutError."""
-    with pytest.raises(TimeoutError):
-        handler(None, None)
-
 
 def test_read_qr_code_from_camera(mocker):
     """Test read_qr_code_from_camera with mocked dependencies."""

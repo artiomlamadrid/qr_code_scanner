@@ -49,9 +49,8 @@ def main() -> None:
         args.timeout = 10
     print(f"Timeout set to: {args.timeout} seconds")
 
-    qr_data = try_with_timeout(
-        lambda: read_qr_code_from_camera(timeout_duration=args.timeout), args.timeout
-    )
+    qr_data = read_qr_code_from_camera(timeout_duration = args.timeout)
+    
     print("QR code data:", qr_data if qr_data else "None")
 
     if qr_data:
@@ -90,8 +89,6 @@ def get_camera_image(
     if filename:
         cv2.imwrite(filename, frame)
         print(f"Image saved to {filename}")
-    else:
-        print("No filename provided, returning image without saving.")
     return frame
 
 
@@ -108,31 +105,9 @@ def parse_qr_code(image: np.ndarray) -> Optional[list[str]]:
     return None
 
 
-def handler(signum: int, frame: object) -> None:
-    """Signal handler for timeout."""
-    raise TimeoutError("Function call timed out")
-
-
-def try_with_timeout(
-    func: Callable[..., Any], timeout: int = 10, raise_exception: bool = False
-) -> Optional[Any]:
-    """Executes a function with a timeout. If the function does not complete within the timeout,"""
-    signal.signal(signal.SIGALRM, handler)
-    signal.alarm(timeout)
-    try:
-        result = func()
-        signal.alarm(0)
-        return result
-    except TimeoutError:
-        print("Function call timed out")
-        if raise_exception:
-            raise
-        return None
-
-
 def read_qr_code_from_camera(poll_interval: float = 0.2, timeout_duration: float = 10) -> Optional[str]:
     """Reads a QR code from the camera, polling at specified intervals until a QR code is detected or timeout occurs."""
-    
+
     start_time = time.time()
     while time.time() - start_time < timeout_duration:
         frame = get_camera_image()  # Capture frame using get_camera_image

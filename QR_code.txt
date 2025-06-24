@@ -1,0 +1,6 @@
+Project title: QR Code Scanner
+Name: Artiom LaMadrid
+GitHub: artiomlamadrid
+edX: artiomlamadrid
+Location: Stockholm, Sweden
+Date: 2025-06-24

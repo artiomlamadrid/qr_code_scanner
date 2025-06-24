@@ -130,31 +130,21 @@ def try_with_timeout(
         return None
 
 
-def read_qr_code_from_camera(
-    poll_interval: float = 0.2, timeout_duration: int = 10
-) -> Optional[str]:
-    """Reads a QR code from the camera with a specified polling interval and timeout duration."""
-
-    cap = cv2.VideoCapture(0, cv2.CAP_AVFOUNDATION)
-    if not cap.isOpened():
-        print("Could not open camera")
-        return None
+def read_qr_code_from_camera(poll_interval: float = 0.2, timeout_duration: float = 10) -> Optional[str]:
+    """Reads a QR code from the camera, polling at specified intervals until a QR code is detected or timeout occurs."""
+    
     start_time = time.time()
-    try:
-        while time.time() - start_time < timeout_duration:
-            ret, frame = cap.read()
-            if not ret:
-                print("No image captured.")
-                continue
-            qr_data = parse_qr_code(frame)
-            if qr_data:
-                # print("QR codes detected:", ", ".join(qr_data))
-                return qr_data[0]
-            time.sleep(poll_interval)
-        print("No QR code detected within the timeout period.")
-        return None
-    finally:
-        cap.release()
+    while time.time() - start_time < timeout_duration:
+        frame = get_camera_image()  # Capture frame using get_camera_image
+        if frame is None:
+            print("No image captured.")
+            continue
+        qr_data = parse_qr_code(frame)
+        if qr_data:
+            return qr_data[0]  # Return the first QR code detected
+        time.sleep(poll_interval)
+    print("No QR code detected within the timeout period.")
+    return None
 
 
 def write_log_to_file(filename: str | Path, message: str) -> None:

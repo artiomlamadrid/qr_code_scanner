@@ -79,5 +79,5 @@ The core of the program is built around a few main functions:
 
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
-   cd <repository-name>
+   git clone https://github.com/artiomlamadrid/qr_code_scanner.git
+   cd qr_code_scanner

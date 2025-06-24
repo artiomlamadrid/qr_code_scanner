@@ -13,7 +13,6 @@ import numpy as np
 from typing import Optional
 from pathlib import Path
 import csv
-from typing import Optional
 from io import StringIO
 
 

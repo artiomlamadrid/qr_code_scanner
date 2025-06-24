@@ -60,14 +60,14 @@ def qr_test_image():
 
 def test_parse_qr_code_detects_code(qr_test_image):
     """Test if parse_qr_code detects a QR code."""
-    data, image = qr_test_image
+    _ , image = qr_test_image
     qr_data = parse_qr_code(image)
     assert qr_data is not None, "parse_qr_code did not detect a QR code."
 
 
 def test_parse_qr_code_returns_list(qr_test_image):
     """Test if parse_qr_code returns a list of strings."""
-    data, image = qr_test_image
+    _ , image = qr_test_image
     qr_data = parse_qr_code(image)
     assert isinstance(qr_data, list), "parse_qr_code should return a list."
     assert all(

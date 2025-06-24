@@ -1,0 +1,7 @@
+opencv-python==4.11.0.86
+numpy==1.26.4
+qrcode==8.2
+pillow==10.3.0
+pytest==7.4.4
+pytest-mock==3.14.1
+python-dateutil==2.9.0.post0

@@ -57,7 +57,7 @@ The core of the program is built around a few main functions:
 ## Tools Used
 
 - [VS Code](https://code.visualstudio.com/)
-- [Github] https://github.com
+- [Github](https://github.com)
 - [Copilot](https://github.com/features/copilot)
 - [ChatGPT](https://chat.openai.com/)
 - [Grok](https://x.ai/)

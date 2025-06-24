@@ -4,9 +4,6 @@
 # Created: 2025-06-23
 
 import os
-os.environ["OPENCV_LOG_LEVEL"] = "SILENT"
-os.environ["OPENCV_VIDEOIO_DEBUG"] = "0"
-os.environ["OPENCV_VIDEOIO_MSMF_ENABLE_HW_TRANSFORMS"] = "0"
 import cv2
 import signal
 import time

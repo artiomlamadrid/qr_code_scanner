@@ -50,7 +50,7 @@ def test_get_camera_image_failure():
         os.remove("invalid_snapshot.png")
 
 
-@pytest.fixture(scope="function")  # Changed to function scope for isolation
+@pytest.fixture(scope="function")
 def qr_test_image():
     data = "unit test string"
     filename = "unit_test_qr.png"
@@ -68,7 +68,7 @@ def test_parse_qr_code_detects_code(qr_test_image):
     assert qr_data is not None, "parse_qr_code did not detect a QR code."
 
 
-def test_parse_qr_code_returns_list(qr_test_image):  # Updated
+def test_parse_qr_code_returns_list(qr_test_image):
     """Test if parse_qr_code returns a list of strings."""
     data, image = qr_test_image
     qr_data = parse_qr_code(image)
@@ -78,7 +78,7 @@ def test_parse_qr_code_returns_list(qr_test_image):  # Updated
     ), "parse_qr_code should return a list of strings."
 
 
-def test_parse_qr_code_correct_data(qr_test_image):  # Updated
+def test_parse_qr_code_correct_data(qr_test_image):
     """Test if parse_qr_code correctly decodes a QR code."""
     data, image = qr_test_image
     qr_data = parse_qr_code(image)
@@ -94,7 +94,7 @@ def test_parse_qr_code_no_code():
     ), "parse_qr_code should return None when no QR code is detected."
 
 
-def test_try_with_timeout_success():  # Fixed typo
+def test_try_with_timeout_success():
     """Test if try_with_timeout executes the function within the timeout."""
 
     def dummy_function():
@@ -122,7 +122,7 @@ def test_handler_timeout():
         handler(None, None)
 
 
-def test_read_qr_code_from_camera(mocker):  # Updated
+def test_read_qr_code_from_camera(mocker):
     """Test read_qr_code_from_camera with mocked dependencies."""
     mocker.patch("qr_code_scanner.parse_qr_code", return_value=["test QR code data"])
     result = read_qr_code_from_camera(timeout_duration=1)
@@ -145,7 +145,7 @@ def test_write_log_to_file():
     log_file.unlink()
 
 
-def test_write_log_to_file_no_message():  # Updated
+def test_write_log_to_file_no_message():
     """Test if write_log_to_file handles empty messages."""
     log_file = Path("test_log_empty.csv")
     write_log_to_file(log_file, "")

@@ -10,7 +10,7 @@ Built as part of a portfolio project. Originally developed during the CS50 Intro
 
 ## Video Presentation
 
- - [Youtube](https://youtu.be/ZIZn9P7-zqw)
+ - [Youtube](https://youtu.be/TJX8A9Ygkk8)
 
 ---
 

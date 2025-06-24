@@ -5,3 +5,4 @@ __pycache__/
 *.png
 .DS_Store
 *.csv
+qr_code_data.txt

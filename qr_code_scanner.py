@@ -14,16 +14,29 @@ import numpy as np
 from typing import Optional
 from pathlib import Path
 import csv
+from typing import Optional, Callable, Any
+from io import StringIO
 
-cv2.setUseOptimized(True)
-cv2.ocl.setUseOpenCL(False)
+cv2.setUseOptimized(True)  # Enable OpenCV optimizations, improves real time performance
+cv2.ocl.setUseOpenCL(
+    False
+)  # Disable OpenCL, rely on CPU for processing for better compatibility
 
-def main():
+
+def main() -> None:
     """Main function to handle command line arguments and initiate QR code scanning."""
-    parser = argparse.ArgumentParser(description="Scan a QR code using the device's camera.")
-    parser.add_argument("--output", type=str, help="Optional filename to save QR code data.")
-    parser.add_argument("--timeout", type=int, default=10,
-                        help="Timeout in seconds for QR code detection. Default is 10 seconds.")
+    parser = argparse.ArgumentParser(
+        description="Scan a QR code using the device's camera."
+    )
+    parser.add_argument(
+        "--output", type=str, help="Optional filename to save QR code data."
+    )
+    parser.add_argument(
+        "--timeout",
+        type=int,
+        default=10,
+        help="Timeout in seconds for QR code detection. Default is 10 seconds.",
+    )
     args = parser.parse_args()
 
     if args.output:
@@ -36,7 +49,9 @@ def main():
         args.timeout = 10
     print(f"Timeout set to: {args.timeout} seconds")
 
-    qr_data = try_with_timeout(lambda: read_qr_code_from_camera(timeout_duration=args.timeout), args.timeout)
+    qr_data = try_with_timeout(
+        lambda: read_qr_code_from_camera(timeout_duration=args.timeout), args.timeout
+    )
     print("QR code data:", qr_data if qr_data else "None")
 
     if qr_data:
@@ -44,21 +59,24 @@ def main():
         if args.output:
             if os.path.exists(args.output):
                 print(f"Warning: Overwriting existing file {args.output}")
-            with open(args.output, 'w') as f:
+            with open(args.output, "w") as f:
                 f.write(qr_data)
             print(f"Data saved to {args.output}")
         else:
             print("No output file specified. QR code data not saved.")
-        write_log_to_file('runtime_log.csv', f"QR code detected: {qr_data}")
+        write_log_to_file("runtime_log.csv", f"QR code detected: {qr_data}")
     else:
         print("No QR code detected within timeout.")
-        write_log_to_file('runtime_log.csv', f"No QR code detected within timeout.")
+        write_log_to_file("runtime_log.csv", f"No QR code detected within timeout.")
 
     return
 
-def get_camera_image(filename: Optional[str] = None, camera_index: int = 0) -> Optional[np.ndarray]:
+
+def get_camera_image(
+    filename: Optional[str] = None, camera_index: int = 0
+) -> Optional[np.ndarray]:
     """Captures an image from the camera and optionally saves it to a file."""
-    
+
     cap = cv2.VideoCapture(camera_index, cv2.CAP_AVFOUNDATION)
     if not cap.isOpened():
         print("Could not open camera")
@@ -73,12 +91,13 @@ def get_camera_image(filename: Optional[str] = None, camera_index: int = 0) -> O
         cv2.imwrite(filename, frame)
         print(f"Image saved to {filename}")
     else:
-        print('No filename provided, returning image without saving.')
+        print("No filename provided, returning image without saving.")
     return frame
+
 
 def parse_qr_code(image: np.ndarray) -> Optional[list[str]]:
     """Parses a QR code from the provided image and returns its data as a list of strings."""
-    
+
     qr_decoder = cv2.QRCodeDetector()
     try:
         retval, data, points, _ = qr_decoder.detectAndDecodeMulti(image)
@@ -88,12 +107,16 @@ def parse_qr_code(image: np.ndarray) -> Optional[list[str]]:
         print(f"Error decoding QR code: {e}")
     return None
 
-def handler(signum, frame):
+
+def handler(signum: int, frame: object) -> None:
     """Signal handler for timeout."""
     raise TimeoutError("Function call timed out")
 
-def try_with_timeout(func, timeout=10, raise_exception=False):
-    """ Executes a function with a timeout. If the function does not complete within the timeout,"""
+
+def try_with_timeout(
+    func: Callable[..., Any], timeout: int = 10, raise_exception: bool = False
+) -> Optional[Any]:
+    """Executes a function with a timeout. If the function does not complete within the timeout,"""
     signal.signal(signal.SIGALRM, handler)
     signal.alarm(timeout)
     try:
@@ -106,9 +129,12 @@ def try_with_timeout(func, timeout=10, raise_exception=False):
             raise
         return None
 
-def read_qr_code_from_camera(poll_interval=0.2, timeout_duration=10):
+
+def read_qr_code_from_camera(
+    poll_interval: float = 0.2, timeout_duration: int = 10
+) -> Optional[str]:
     """Reads a QR code from the camera with a specified polling interval and timeout duration."""
-    
+
     cap = cv2.VideoCapture(0, cv2.CAP_AVFOUNDATION)
     if not cap.isOpened():
         print("Could not open camera")
@@ -122,13 +148,14 @@ def read_qr_code_from_camera(poll_interval=0.2, timeout_duration=10):
                 continue
             qr_data = parse_qr_code(frame)
             if qr_data:
-                print("QR codes detected:", ', '.join(qr_data))
+                # print("QR codes detected:", ", ".join(qr_data))
                 return qr_data[0]
             time.sleep(poll_interval)
         print("No QR code detected within the timeout period.")
         return None
     finally:
         cap.release()
+
 
 def write_log_to_file(filename: str | Path, message: str) -> None:
     """Writes a log message to a specified CSV file with a timestamp."""
@@ -137,26 +164,27 @@ def write_log_to_file(filename: str | Path, message: str) -> None:
         print("No filename provided for logging.")
         return
     path = Path(filename)
-    if path.parent != Path('.'):
+    if path.parent != Path("."):
         path.parent.mkdir(parents=True, exist_ok=True)
     try:
-        with open(path, 'a', newline='') as f:
+        with open(path, "a", newline="") as f:
             writer = csv.writer(f)
             if path.stat().st_size == 0:
-                writer.writerow(['Timestamp', 'Message'])
-            writer.writerow([datetime.now().strftime('%Y-%m-%d %H:%M:%S'), message])
+                writer.writerow(["Timestamp", "Message"])
+            writer.writerow([datetime.now().strftime("%Y-%m-%d %H:%M:%S"), message])
     except IOError as e:
         print(f"Error writing to log file: {e}")
 
-def capture_stdout_and_stderr():
+
+def capture_stdout_and_stderr() -> tuple[StringIO, StringIO]:
     """Captures stdout and stderr to StringIO buffers for testing purposes."""
 
-    from io import StringIO
     stdout_buffer = StringIO()
     stderr_buffer = StringIO()
     sys.stdout = stdout_buffer
     sys.stderr = stderr_buffer
     return stdout_buffer, stderr_buffer
+
 
 if __name__ == "__main__":
     main()

@@ -6,3 +6,4 @@ __pycache__/
 .DS_Store
 *.csv
 qr_code_data.txt
+Introduction.txt

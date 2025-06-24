@@ -17,11 +17,6 @@ import csv
 from typing import Optional, Callable, Any
 from io import StringIO
 
-cv2.setUseOptimized(True)  # Enable OpenCV optimizations, improves real time performance
-cv2.ocl.setUseOpenCL(
-    False
-)  # Disable OpenCL, rely on CPU for processing for better compatibility
-
 
 def main() -> None:
     """Main function to handle command line arguments and initiate QR code scanning."""
